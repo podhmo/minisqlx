@@ -25,4 +25,5 @@ type Rows = sqlx.Rows
 
 type DB interface {
 	ExecContext(ctx context.Context, query string, args ...interface{}) (sql.Result, error)
+	QueryxContext(ctx context.Context, query string, args ...interface{}) (*Rows, error)
 }
