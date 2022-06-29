@@ -29,7 +29,7 @@ type DB interface {
 	GetContext(ctx context.Context, dest interface{}, query string, args ...interface{}) error
 }
 
-func GetContext[T any](ctx context.Context, db DB, query string, args ...interface{}) (T, error) {
+func Get[T any](ctx context.Context, db DB, query string, args ...interface{}) (T, error) {
 	var dest T
 	if err := db.GetContext(ctx, &dest, query, args...); err != nil {
 		return dest, err
@@ -37,7 +37,7 @@ func GetContext[T any](ctx context.Context, db DB, query string, args ...interfa
 	return dest, nil
 }
 
-func GetManyContext[T any](ctx context.Context, db DB, query string, args ...interface{}) ([]T, error) {
+func GetMany[T any](ctx context.Context, db DB, query string, args ...interface{}) ([]T, error) {
 	var r []T
 	rows, err := db.QueryxContext(ctx, query, args...)
 	if err != nil {
