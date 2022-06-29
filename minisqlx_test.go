@@ -177,7 +177,7 @@ func TestGet(t *testing.T) { // Get is shorthand of select one
 	})
 }
 
-func TestGetMany(t *testing.T) { // Get is shorthand of select one
+func TestSelect(t *testing.T) { // Get is shorthand of select one
 	ctx := context.Background()
 	db, teardown := newDB(ctx, t)
 	defer teardown()
@@ -190,7 +190,7 @@ func TestGetMany(t *testing.T) { // Get is shorthand of select one
 
 	t.Run("before insert", func(t *testing.T) {
 		stmt := `SELECT name, age FROM users WHERE age=? ORDER BY name desc`
-		got, err := GetMany[user](ctx, db, stmt, age)
+		got, err := Select[user](ctx, db, stmt, age)
 		if err != nil {
 			t.Fatalf("unexpected error is found: %+v", err)
 		}
@@ -211,7 +211,7 @@ func TestGetMany(t *testing.T) { // Get is shorthand of select one
 
 	t.Run("after insert", func(t *testing.T) {
 		stmt := `SELECT name, age FROM users WHERE age=? ORDER BY name desc`
-		got, err := GetMany[user](ctx, db, stmt, age)
+		got, err := Select[user](ctx, db, stmt, age)
 		if err != nil {
 			t.Fatalf("unexpected error is found: %+v", err)
 		}
