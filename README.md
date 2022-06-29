@@ -1,0 +1,2 @@
+# minisqlx
+mini sqlx wrapper
