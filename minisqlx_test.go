@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
 	_ "modernc.org/sqlite"
 )
 
@@ -57,41 +58,32 @@ func TestIt(t *testing.T) {
 
 	// TODO: bulk insert
 	t.Run("select one", func(t *testing.T) {
-		var want struct {
-			name string
-			age  int
+		type user struct {
+			Name string
+			Age  int
 		}
-		want.name = "foo"
-		want.age = 20
 
-		stmt := `SELECT name, age FROM users WHERE name=?`
+		want := user{Name: "foo", Age: 20}
+		stmt := `SELECT name, age FROM users WHERE Name=?`
 
-		rows, err := db.QueryxContext(ctx, stmt, want.name)
+		rows, err := db.QueryxContext(ctx, stmt, want.Name)
 		if err != nil {
 			t.Fatalf("select one: %+v", err)
 		}
 
-		var u struct {
-			name string
-			age  int
-		}
-
 		i := 0
 		for ; rows.Next(); i++ {
-			if err := rows.Scan(&u.name, &u.age); err != nil {
+			var u user
+			if err := rows.Scan(&u.Name, &u.Age); err != nil {
 				t.Errorf("rows[%d].Scan(): %+v", err, i)
 			}
-
-			if want, got := want.name, u.name; want != got {
-				t.Errorf("user.Name want=%v, but got=%v", want, got)
-			}
-			if want, got := want.age, u.age; want != got {
-				t.Errorf("user.age want=%v, but got=%v", want, got)
+			if diff := cmp.Diff(u, want); diff != "" {
+				t.Errorf("rows[%d] data mismatch (-got +want):\n%s", i, diff)
 			}
 		}
-
 		if want, got := 1, i; want != got {
 			t.Errorf("num of rows want=%v, but got=%v", want, got)
 		}
 	})
+	// TODO: All and One
 }
